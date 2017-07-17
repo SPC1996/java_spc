@@ -1,13 +1,21 @@
 package java_spc.io;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+
 import java_spc.util.BinaryFile;
 import java_spc.util.Directory;
 import java_spc.util.TextFile;
+import nu.xom.Document;
+import nu.xom.Element;
+import nu.xom.Serializer;
 import java_spc.util.Directory.TreeInfo;
 import java_spc.util.Resource;
 
@@ -55,13 +63,38 @@ public class CountInFile{
         }
         return heads;
     }
+    
+    public static void countWordAndStoreInXML(String fileRName,String fileWName) throws Exception{
+    	Map<String, Long> map=new TextFile(fileRName, "\\W+")
+    							.stream()
+    							.collect(Collectors.groupingBy(s -> s,TreeMap::new,Collectors.counting()));
+    	Element root=new Element("words");
+    	for(Map.Entry<String, Long> entry:map.entrySet()){
+    		Element word=new Element("word");
+        	Element string=new Element("string");
+        	Element count=new Element("count");
+    		string.appendChild(entry.getKey());
+    		count.appendChild(entry.getValue().toString());
+    		word.appendChild(string);
+    		word.appendChild(count);
+    		root.appendChild(word);
+    	}
+    	Document doc=new Document(root);
+    	BufferedOutputStream out=new BufferedOutputStream(new FileOutputStream(fileWName));
+    	Serializer serializer=new Serializer(out, "utf-8");
+		serializer.setIndent(4);
+		serializer.setMaxLength(60);
+		serializer.write(doc);
+		serializer.flush();
+    }
 
-    public static void main(String[] args) throws IOException{
-        Map<Character,Integer> map=countChar(Resource.path("file/sing.txt"));
-        System.out.println(map);
-        Map<Byte,Integer> map2=countByte(Resource.path("file/note.txt"));
-        System.out.println(map2);
-        ArrayList<String> heads=checkClass(".");
-        System.out.println(heads);
+    public static void main(String[] args) throws Exception{
+//        Map<Character,Integer> map=countChar(Resource.path("file/sing.txt"));
+//        System.out.println(map);
+//        Map<Byte,Integer> map2=countByte(Resource.path("file/note.txt"));
+//        System.out.println(map2);
+//        ArrayList<String> heads=checkClass(".");
+//        System.out.println(heads);
+    	countWordAndStoreInXML(Resource.pathToSource("file/note.txt"), Resource.pathToSource("file/word.xml"));
     }
 }
