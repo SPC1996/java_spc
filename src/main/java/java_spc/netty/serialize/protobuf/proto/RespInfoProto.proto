@@ -1,0 +1,8 @@
+option java_package = "java_spc.netty.serialize.protobuf";
+option java_outer_classname = "RespInfo";
+
+message RespInfoProto{
+	required int32 id = 1;
+	required int32 code = 2;
+	required string desc = 3;
+}

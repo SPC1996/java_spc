@@ -1,0 +1,9 @@
+option java_package = "java_spc.netty.serialize.protobuf";
+option java_outer_classname = "ReqInfo";
+
+message ReqInfoProto{
+	required int32 id = 1;
+	required string uname = 2;
+	required string pname = 3;
+	required string address = 4;
+}

@@ -1,9 +1,10 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>com.keessi</groupId>
-  <artifactId>java_spc</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <name>java_spc</name>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.keessi</groupId>
+	<artifactId>java_spc</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>java_spc</name>
 
 	<dependencies>
 		<dependency>
@@ -17,9 +18,35 @@
 			<artifactId>xom</artifactId>
 			<version>1.2.5</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.msgpack</groupId>
+			<artifactId>msgpack</artifactId>
+			<version>0.6.11</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.protobuf</groupId>
+			<artifactId>protobuf-java</artifactId>
+			<version>3.3.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.marshalling</groupId>
+			<artifactId>jboss-marshalling-river</artifactId>
+			<version>1.4.11.Final</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.jboss.marshalling</groupId>
+			<artifactId>jboss-marshalling-serial</artifactId>
+			<version>1.4.11.Final</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
-  
-  <build>
-  	<finalName>java_spc</finalName>
-  </build>
+
+	<build>
+		<finalName>java_spc</finalName>
+	</build>
 </project>
