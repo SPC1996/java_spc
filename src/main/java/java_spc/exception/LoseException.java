@@ -1,0 +1,72 @@
+package java_spc.exception;
+
+public class LoseException {
+	public LoseException() {
+	}
+
+	@SuppressWarnings("finally")
+	boolean testEx() throws Exception {
+		boolean ret = true;
+		try {
+			ret = testEx1();
+		} catch (Exception e) {
+			System.out.println("testEx, catch exception");
+			ret = false;
+			throw e;
+		} finally {
+			System.out.println("testEx, finally; return value=" + ret);
+			return ret;
+		}
+	}
+
+	@SuppressWarnings("finally")
+	boolean testEx1() throws Exception {
+		boolean ret = true;
+		try {
+			ret = testEx2();
+			if (!ret) {
+				return false;
+			}
+			System.out.println("testEx1, at the end of try");
+			return ret;
+		} catch (Exception e) {
+			System.out.println("testEx1, catch exception");
+			ret = false;
+			throw e;
+		} finally {
+			System.out.println("testEx1, finally; return value=" + ret);
+			return ret;
+		}
+	}
+
+	@SuppressWarnings("finally")
+	boolean testEx2() throws Exception {
+		boolean ret = true;
+		try {
+			int b = 12;
+			@SuppressWarnings("unused")
+			int c;
+			for (int i = 2; i >= -2; i--) {
+				c = b / i;
+				System.out.println("i=" + i);
+			}
+			return true;
+		} catch (Exception e) {
+			System.out.println("testEx2, catch exception");
+			ret = false;
+			throw e;
+		} finally {
+			System.out.println("testEx2, finally; return value=" + ret);
+			return ret;
+		}
+	}
+
+	public static void main(String[] args) {
+		LoseException testException1 = new LoseException();
+		try {
+			testException1.testEx();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+}
