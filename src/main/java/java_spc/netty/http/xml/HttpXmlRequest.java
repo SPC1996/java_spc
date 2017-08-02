@@ -3,31 +3,31 @@ package java_spc.netty.http.xml;
 import io.netty.handler.codec.http.FullHttpRequest;
 
 public class HttpXmlRequest {
-	private FullHttpRequest request;
-	private Object body;
-	
-	public HttpXmlRequest(FullHttpRequest request, Object body) {
-		this.request=request;
-		this.body=body;
-	}
+    private FullHttpRequest request;
+    private Object body;
 
-	public final FullHttpRequest getRequest() {
-		return request;
-	}
+    public HttpXmlRequest(FullHttpRequest request, Object body) {
+        this.request = request;
+        this.body = body;
+    }
 
-	public final void setRequest(FullHttpRequest request) {
-		this.request = request;
-	}
+    public final FullHttpRequest getRequest() {
+        return request;
+    }
 
-	public final Object getBody() {
-		return body;
-	}
+    public final void setRequest(FullHttpRequest request) {
+        this.request = request;
+    }
 
-	public final void setBody(Object body) {
-		this.body = body;
-	}
-	
-	public String toString() {
-		return "HttpXmlRequest [request="+request+", body="+body+"]";
-	}
+    public final Object getBody() {
+        return body;
+    }
+
+    public final void setBody(Object body) {
+        this.body = body;
+    }
+
+    public String toString() {
+        return "HttpXmlRequest [request=" + request + ", body=" + body + "]";
+    }
 }

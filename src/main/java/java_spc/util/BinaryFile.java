@@ -5,11 +5,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-public class BinaryFile{
-    public static byte[] read(File file) throws IOException{
-        BufferedInputStream in=new BufferedInputStream(new FileInputStream(file));
+public class BinaryFile {
+    public static byte[] read(File file) throws IOException {
+        BufferedInputStream in = new BufferedInputStream(new FileInputStream(file));
         try {
-            byte[] data=new byte[in.available()];
+            byte[] data = new byte[in.available()];
             in.read(data);
             return data;
         } finally {
@@ -17,7 +17,7 @@ public class BinaryFile{
         }
     }
 
-    public static byte[] read(String fileName) throws IOException{
+    public static byte[] read(String fileName) throws IOException {
         return read(new File(fileName).getAbsoluteFile());
     }
 }

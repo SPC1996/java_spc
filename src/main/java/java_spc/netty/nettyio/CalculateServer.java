@@ -33,87 +33,87 @@ import java_spc.netty.serialize.marshalling.ResponseMsg;
  * 使用Marshalling进行编解码
  */
 public class CalculateServer {
-	private int port;
-	
-	public CalculateServer() {
-		this(8080);
-	}
-	
-	public CalculateServer(int port) {
-		this.port=port;
-	}
-	
-	public void run() throws Exception {
-		EventLoopGroup bossGroup=new NioEventLoopGroup();
-		EventLoopGroup workerGroup=new NioEventLoopGroup();
-		try {
-			ServerBootstrap bootstrap=new ServerBootstrap();
-			bootstrap.group(bossGroup, workerGroup)
-					 .channel(NioServerSocketChannel.class)
-					 .option(ChannelOption.SO_BACKLOG, 100)
-					 .handler(new LoggingHandler(LogLevel.INFO))
-					 .childHandler(new ChannelInitializer<SocketChannel>() {
-						@Override
-						protected void initChannel(SocketChannel ch) throws Exception {
-							ch.pipeline().addLast(MarshallingCodeCFactory.buildMarshallingDecoder());
-							ch.pipeline().addLast(MarshallingCodeCFactory.buildMarshallingEncoder());
-							ch.pipeline().addLast(new CalculateServerHandler());
-						}
-					});
-			ChannelFuture future=bootstrap.bind(port).sync();
-			future.channel().closeFuture().sync();
-		} finally {
-			bossGroup.shutdownGracefully();
-			workerGroup.shutdownGracefully();
-		}
-	}
-	
-	public static void main(String[] args) throws Exception {
-		CalculateServer server=new CalculateServer();
-		server.run();
-	}
+    private int port;
+
+    public CalculateServer() {
+        this(8080);
+    }
+
+    public CalculateServer(int port) {
+        this.port = port;
+    }
+
+    public void run() throws Exception {
+        EventLoopGroup bossGroup = new NioEventLoopGroup();
+        EventLoopGroup workerGroup = new NioEventLoopGroup();
+        try {
+            ServerBootstrap bootstrap = new ServerBootstrap();
+            bootstrap.group(bossGroup, workerGroup)
+                    .channel(NioServerSocketChannel.class)
+                    .option(ChannelOption.SO_BACKLOG, 100)
+                    .handler(new LoggingHandler(LogLevel.INFO))
+                    .childHandler(new ChannelInitializer<SocketChannel>() {
+                        @Override
+                        protected void initChannel(SocketChannel ch) throws Exception {
+                            ch.pipeline().addLast(MarshallingCodeCFactory.buildMarshallingDecoder());
+                            ch.pipeline().addLast(MarshallingCodeCFactory.buildMarshallingEncoder());
+                            ch.pipeline().addLast(new CalculateServerHandler());
+                        }
+                    });
+            ChannelFuture future = bootstrap.bind(port).sync();
+            future.channel().closeFuture().sync();
+        } finally {
+            bossGroup.shutdownGracefully();
+            workerGroup.shutdownGracefully();
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        CalculateServer server = new CalculateServer();
+        server.run();
+    }
 }
 
 class CalculateServerHandler extends ChannelInboundHandlerAdapter {
 
-	@Override
-	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-		RequestMsg req=(RequestMsg) msg;
-		System.out.println("Server receive request msg : "+msg);
-		ResponseMsg resp=new ResponseMsg();
-		if(req.getOp()=='/'&&req.getNum2()==0){
-			resp.setStatus("failed");
-			resp.setRes(req+" = null");
-		} else {
-			resp.setStatus("succeed");
-			switch (req.getOp()) {
-			case '+':
-				resp.setRes(req+" = "+(req.getNum1()+req.getNum2()));
-				break;
-			case '-':
-				resp.setRes(req+" = "+(req.getNum1()-req.getNum2()));
-				break;
-			case '*':
-				resp.setRes(req+" = "+(req.getNum1()*req.getNum2()));
-				break;
-			case '/':
-				resp.setRes(req+" = "+(req.getNum1()/req.getNum2()));
-				break;
-			default:
-				resp.setStatus("failed");
-				resp.setRes(req+" = null");
-				break;
-			}
-		}
-		ctx.writeAndFlush(resp);
-	}
+    @Override
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        RequestMsg req = (RequestMsg) msg;
+        System.out.println("Server receive request msg : " + msg);
+        ResponseMsg resp = new ResponseMsg();
+        if (req.getOp() == '/' && req.getNum2() == 0) {
+            resp.setStatus("failed");
+            resp.setRes(req + " = null");
+        } else {
+            resp.setStatus("succeed");
+            switch (req.getOp()) {
+                case '+':
+                    resp.setRes(req + " = " + (req.getNum1() + req.getNum2()));
+                    break;
+                case '-':
+                    resp.setRes(req + " = " + (req.getNum1() - req.getNum2()));
+                    break;
+                case '*':
+                    resp.setRes(req + " = " + (req.getNum1() * req.getNum2()));
+                    break;
+                case '/':
+                    resp.setRes(req + " = " + (req.getNum1() / req.getNum2()));
+                    break;
+                default:
+                    resp.setStatus("failed");
+                    resp.setRes(req + " = null");
+                    break;
+            }
+        }
+        ctx.writeAndFlush(resp);
+    }
 
-	@Override
-	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-		cause.printStackTrace();
-		ctx.close();
-	}
-	
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        cause.printStackTrace();
+        ctx.close();
+    }
+
 }
 
 /**
@@ -122,21 +122,21 @@ class CalculateServerHandler extends ChannelInboundHandlerAdapter {
  * 负责产生Marshalling编解码器的工厂
  */
 final class MarshallingCodeCFactory {
-	public static MarshallingDecoder buildMarshallingDecoder() {
-		final MarshallerFactory factory=Marshalling.getProvidedMarshallerFactory("serial");
-		final MarshallingConfiguration configuration=new MarshallingConfiguration();
-		configuration.setVersion(5);
-		UnmarshallerProvider provider=new DefaultUnmarshallerProvider(factory, configuration);
-		MarshallingDecoder decoder=new MarshallingDecoder(provider,1024);
-		return decoder;
-	}
-	
-	public static MarshallingEncoder buildMarshallingEncoder() {
-		final MarshallerFactory factory=Marshalling.getProvidedMarshallerFactory("serial");
-		final MarshallingConfiguration configuration=new MarshallingConfiguration();
-		configuration.setVersion(5);
-		MarshallerProvider provider=new DefaultMarshallerProvider(factory, configuration);
-		MarshallingEncoder encoder=new MarshallingEncoder(provider);
-		return encoder;
-	}
+    public static MarshallingDecoder buildMarshallingDecoder() {
+        final MarshallerFactory factory = Marshalling.getProvidedMarshallerFactory("serial");
+        final MarshallingConfiguration configuration = new MarshallingConfiguration();
+        configuration.setVersion(5);
+        UnmarshallerProvider provider = new DefaultUnmarshallerProvider(factory, configuration);
+        MarshallingDecoder decoder = new MarshallingDecoder(provider, 1024);
+        return decoder;
+    }
+
+    public static MarshallingEncoder buildMarshallingEncoder() {
+        final MarshallerFactory factory = Marshalling.getProvidedMarshallerFactory("serial");
+        final MarshallingConfiguration configuration = new MarshallingConfiguration();
+        configuration.setVersion(5);
+        MarshallerProvider provider = new DefaultMarshallerProvider(factory, configuration);
+        MarshallingEncoder encoder = new MarshallingEncoder(provider);
+        return encoder;
+    }
 }

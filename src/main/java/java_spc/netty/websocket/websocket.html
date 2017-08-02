@@ -1,54 +1,55 @@
 <!DOCTYPE html>
 <html>
-	<head>
-	<meta charset="UTF-8">
-		<title>Netty WebSocket Service</title>
-	</head>
-	<body>
-		<br>
-		<script type="text/javascript">
-			var socket;
-			if(!window.WebSocket) {
-				window.WebSocket=window.MozWebSocket;
-			}
-			if(window.WebSocket) {
-				socket=new WebSocket("ws://localhost:8080/websocket");
-				socket.onmessage=function(event) {
-					var ta=document.getElementById("response-text");
-					ta.value="";
-					ta.value=event.data;
-				};
-				socket.onopen=function(event) {
-					var ta=document.getElementById("response-text");
-					ta.value="Open WebSocket Service Successful, This Broswer Supports WebSocket";
-				};
-				socket.onclose=function(event) {
-					var ta=document.getElementById("response-text");
-					ta.value="";
-					ta.value="WebSocket Close";
-				}
-			} else {
-				alert("Sorry, your broswer doesn't support WebSocket!");
-			}
-			function send(message) {
-				if(!window.WebSocket) {
-					return;
-				}
-				if(socket.readyState=WebSocket.OPEN) {
-					socket.send(message);
-				} else {
-					alert("WebSocket connect failed!");
-				}
-			}
-		</script>
-		
-		<form onsubmit="return false;">
-			<input type="text" name="message" value="Netty Running" />
-			<br/><br/>
-			<input type="button" value=" Send " onclick="send(this.form.message.value)" />
-			<hr color="blue" />
-			<h3>Response Message</h3>
-			<textarea id="response-text" style="width:500px;height:300px;"></textarea>
-		</form>
-	</body>
+<head>
+    <meta charset="UTF-8">
+    <title>Netty WebSocket Service</title>
+</head>
+<body>
+<br>
+<script type="text/javascript">
+    var socket;
+    if (!window.WebSocket) {
+        window.WebSocket = window.MozWebSocket;
+    }
+    if (window.WebSocket) {
+        socket = new WebSocket("ws://localhost:8080/websocket");
+        socket.onmessage = function (event) {
+            var ta = document.getElementById("response-text");
+            ta.value = "";
+            ta.value = event.data;
+        };
+        socket.onopen = function (event) {
+            var ta = document.getElementById("response-text");
+            ta.value = "Open WebSocket Service Successful, This Broswer Supports WebSocket";
+        };
+        socket.onclose = function (event) {
+            var ta = document.getElementById("response-text");
+            ta.value = "";
+            ta.value = "WebSocket Close";
+        }
+    } else {
+        alert("Sorry, your broswer doesn't support WebSocket!");
+    }
+
+    function send(message) {
+        if (!window.WebSocket) {
+            return;
+        }
+        if (socket.readyState = WebSocket.OPEN) {
+            socket.send(message);
+        } else {
+            alert("WebSocket connect failed!");
+        }
+    }
+</script>
+
+<form onsubmit="return false;">
+    <input type="text" name="message" value="Netty Running"/>
+    <br/><br/>
+    <input type="button" value=" Send " onclick="send(this.form.message.value)"/>
+    <hr color="blue"/>
+    <h3>Response Message</h3>
+    <textarea id="response-text" style="width:500px;height:300px;"></textarea>
+</form>
+</body>
 </html>

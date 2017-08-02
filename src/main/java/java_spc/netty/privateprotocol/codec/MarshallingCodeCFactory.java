@@ -9,19 +9,19 @@ import org.jboss.marshalling.MarshallingConfiguration;
 import org.jboss.marshalling.Unmarshaller;
 
 public final class MarshallingCodeCFactory {
-	public static Unmarshaller buildUnmarshalling() throws IOException {
-		final MarshallerFactory factory=Marshalling.getProvidedMarshallerFactory("serial");
-		final MarshallingConfiguration configuration=new MarshallingConfiguration();
-		configuration.setVersion(5);
-		final Unmarshaller unmarshaller=factory.createUnmarshaller(configuration);
-		return unmarshaller;
-	}
-	
-	public static Marshaller buildMarshalling() throws IOException {
-		final MarshallerFactory factory=Marshalling.getProvidedMarshallerFactory("serial");
-		final MarshallingConfiguration configuration=new MarshallingConfiguration();
-		configuration.setVersion(5);
-		final Marshaller marshaller=factory.createMarshaller(configuration);
-		return marshaller;
-	}
+    public static Unmarshaller buildUnmarshalling() throws IOException {
+        final MarshallerFactory factory = Marshalling.getProvidedMarshallerFactory("serial");
+        final MarshallingConfiguration configuration = new MarshallingConfiguration();
+        configuration.setVersion(5);
+        final Unmarshaller unmarshaller = factory.createUnmarshaller(configuration);
+        return unmarshaller;
+    }
+
+    public static Marshaller buildMarshalling() throws IOException {
+        final MarshallerFactory factory = Marshalling.getProvidedMarshallerFactory("serial");
+        final MarshallingConfiguration configuration = new MarshallingConfiguration();
+        configuration.setVersion(5);
+        final Marshaller marshaller = factory.createMarshaller(configuration);
+        return marshaller;
+    }
 }

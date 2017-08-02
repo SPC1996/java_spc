@@ -10,14 +10,14 @@ import java.util.Arrays;
 import java.util.TreeSet;
 
 @SuppressWarnings("serial")
-public class TextFile extends ArrayList<String>{
-    public static String read(String fileName){
-        StringBuilder sb=new StringBuilder();
+public class TextFile extends ArrayList<String> {
+    public static String read(String fileName) {
+        StringBuilder sb = new StringBuilder();
         try {
-            BufferedReader in=new BufferedReader(new InputStreamReader(new FileInputStream(fileName), "utf-8"));
+            BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(fileName), "utf-8"));
             try {
                 String s;
-                while((s=in.readLine())!=null){
+                while ((s = in.readLine()) != null) {
                     sb.append(s);
                     sb.append('\n');
                 }
@@ -30,9 +30,9 @@ public class TextFile extends ArrayList<String>{
         return sb.toString();
     }
 
-    public static void write(String fileName, String text){
+    public static void write(String fileName, String text) {
         try {
-            PrintWriter out=new PrintWriter(fileName, "utf-8");
+            PrintWriter out = new PrintWriter(fileName, "utf-8");
             try {
                 out.print(text);
             } finally {
@@ -43,22 +43,22 @@ public class TextFile extends ArrayList<String>{
         }
     }
 
-    public TextFile(String fileName, String splitter){
+    public TextFile(String fileName, String splitter) {
         super(Arrays.asList(read(fileName).split(splitter)));
-        if(get(0).equals("")){
+        if (get(0).equals("")) {
             remove(0);
         }
     }
 
-    public TextFile(String fileName){
+    public TextFile(String fileName) {
         this(fileName, "\n");
     }
 
-    public void write(String fileName){
+    public void write(String fileName) {
         try {
-            PrintWriter out=new PrintWriter(fileName, "utf-8");
+            PrintWriter out = new PrintWriter(fileName, "utf-8");
             try {
-                for(String item:this){
+                for (String item : this) {
                     out.println(item);
                 }
             } finally {
@@ -69,12 +69,12 @@ public class TextFile extends ArrayList<String>{
         }
     }
 
-    public static void main(String[] args){
-        String file=read("./res/test/sing.txt");
+    public static void main(String[] args) {
+        String file = read("./res/test/sing.txt");
         write("./res/test/sing.out", file);
-        TextFile textFile=new TextFile("./res/test/sing.txt");
+        TextFile textFile = new TextFile("./res/test/sing.txt");
         textFile.write("./res/test/sing.out");
-        TreeSet<String> words=new TreeSet<>(new TextFile("./res/test/sing.txt","\\W+"));
+        TreeSet<String> words = new TreeSet<>(new TextFile("./res/test/sing.txt", "\\W+"));
         System.out.println(words);
         System.out.println(words.headSet("a"));
 

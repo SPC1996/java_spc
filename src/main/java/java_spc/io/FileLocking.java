@@ -11,14 +11,14 @@ import java.util.concurrent.TimeUnit;
 
 import java_spc.util.Resource;
 
-public class FileLocking{
-    private static final int LENGTH=0x8FFFFFF;
+public class FileLocking {
+    private static final int LENGTH = 0x8FFFFFF;
     private static FileChannel fc;
 
-    public static void lockFile(String fileName) throws Exception{
-        FileOutputStream fos=new FileOutputStream(fileName);
-        FileLock fl=fos.getChannel().tryLock();
-        if(fl!=null){
+    public static void lockFile(String fileName) throws Exception {
+        FileOutputStream fos = new FileOutputStream(fileName);
+        FileLock fl = fos.getChannel().tryLock();
+        if (fl != null) {
             System.out.println("Locked File");
             TimeUnit.MILLISECONDS.sleep(100);
             fl.release();
@@ -28,27 +28,28 @@ public class FileLocking{
         fos.close();
     }
 
-    private static class LockAndModify extends Thread{
+    private static class LockAndModify extends Thread {
         private ByteBuffer buff;
         private int start, end;
-        LockAndModify(ByteBuffer mbb, int start, int end){
-            this.start=start;
-            this.end=end;
+
+        LockAndModify(ByteBuffer mbb, int start, int end) {
+            this.start = start;
+            this.end = end;
             mbb.limit(end);
             mbb.position(start);
-            buff=mbb.slice();
+            buff = mbb.slice();
             start();
         }
 
-        public void run(){
+        public void run() {
             try {
-                FileLock fl=fc.lock(start,end,false);
-                System.out.println("Locked: "+start+" to "+end);
-                while(buff.position()<buff.limit()-1){
-                    buff.put((byte)(buff.get()+1));
+                FileLock fl = fc.lock(start, end, false);
+                System.out.println("Locked: " + start + " to " + end);
+                while (buff.position() < buff.limit() - 1) {
+                    buff.put((byte) (buff.get() + 1));
                 }
                 fl.release();
-                System.out.println("Released: "+start+" to "+end);
+                System.out.println("Released: " + start + " to " + end);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -56,17 +57,17 @@ public class FileLocking{
     }
 
     @SuppressWarnings("resource")
-	public static void lockMappedFile() throws Exception{
-        fc=new RandomAccessFile(Resource.pathToSource("file/data.txt"), "rw").getChannel();
-        MappedByteBuffer out=fc.map(FileChannel.MapMode.READ_WRITE, 0, LENGTH);
-        for(int i=0;i<LENGTH;i++){
-            out.put((byte)'x');
+    public static void lockMappedFile() throws Exception {
+        fc = new RandomAccessFile(Resource.pathToSource("file/data.txt"), "rw").getChannel();
+        MappedByteBuffer out = fc.map(FileChannel.MapMode.READ_WRITE, 0, LENGTH);
+        for (int i = 0; i < LENGTH; i++) {
+            out.put((byte) 'x');
         }
-        new LockAndModify(out, 0, 0+LENGTH/3);
-        new LockAndModify(out, LENGTH/2, LENGTH/2+LENGTH/4);
+        new LockAndModify(out, 0, 0 + LENGTH / 3);
+        new LockAndModify(out, LENGTH / 2, LENGTH / 2 + LENGTH / 4);
     }
 
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws Exception {
         // lockFile("./res/test/data.txt");
         lockMappedFile();
     }
