@@ -8,7 +8,7 @@ import java.util.Random;
  * @author SPC
  */
 public class Enums {
-    private static Random rand=new Random(23333);
+    private static Random rand=new Random(2333);
 
     public static <T extends Enum<T>> T random(Class<T> ec) {
         return random(ec.getEnumConstants());

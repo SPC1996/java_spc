@@ -2,6 +2,7 @@ package java_spc.enum_type;
 
 import java_spc.util.TextFile;
 
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.Random;
@@ -126,6 +127,21 @@ public class VendingMachine {
         }
     }
 
+    static class StringInputGenerator implements Generator<Input> {
+        private Iterator<String> input;
+
+        public StringInputGenerator(String string) {
+            input = Arrays.asList(string.split(" ")).iterator();
+        }
+
+        @Override
+        public Input next() {
+            if (!input.hasNext())
+                return null;
+            return Enum.valueOf(Input.class, input.next().trim());
+        }
+    }
+
     static void run(Generator<Input> gen) {
         while (state != State.TERMINAL) {
             state.next(gen.next());
@@ -137,7 +153,11 @@ public class VendingMachine {
     }
 
     public static void main(String[] args) {
-        Generator<Input> gen = new RandomInputGenerator();
+        String action = "QUARTER QUARTER QUARTER CHIPS " +
+                "DOLLAR DOLLAR TOOTHPASTE " +
+                "QUARTER DIME SODA " +
+                "ABORT_TRANSACTION STOP";
+        Generator<Input> gen = new StringInputGenerator(action);
         if (args.length == 1) {
             gen = new FileInputGenerator(args[0]);
         }
@@ -173,7 +193,7 @@ enum Input {
     }
 
     public static Input randomSelect() {
-        return values()[rand.nextInt(values().length-1)];
+        return values()[rand.nextInt(values().length - 1)];
     }
 }
 
