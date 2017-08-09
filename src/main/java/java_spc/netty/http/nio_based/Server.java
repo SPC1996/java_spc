@@ -1,5 +1,7 @@
 package java_spc.netty.http.nio_based;
 
+import java_spc.util.Resource;
+
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
@@ -15,6 +17,8 @@ import java.security.KeyStore;
  * before the actual server subclass take over.
  */
 public abstract class Server {
+    private static final String KEY_PATH_SOURCE = Resource.pathToSource("key\\");
+
     ServerSocketChannel ssc;
     SSLContext sslContext = null;
 
@@ -34,7 +38,7 @@ public abstract class Server {
     private void createSSLContext() throws Exception {
         char[] passphrase = "passphrase".toCharArray();
         KeyStore keyStore = KeyStore.getInstance("JKS");
-        keyStore.load(new FileInputStream("testkeys"), passphrase);
+        keyStore.load(new FileInputStream(KEY_PATH_SOURCE + "testkeys"), passphrase);
         KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
         kmf.init(keyStore, passphrase);
         TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
