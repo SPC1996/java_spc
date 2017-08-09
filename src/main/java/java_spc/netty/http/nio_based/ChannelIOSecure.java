@@ -169,7 +169,7 @@ public class ChannelIOSecure extends ChannelIO {
         return !bb.hasRemaining();
     }
 
-    boolean doHandshake() throws IOException {
+    boolean doHandShake() throws IOException {
         return doHandShake(null);
     }
 
@@ -188,7 +188,7 @@ public class ChannelIOSecure extends ChannelIO {
      * @return true when handshake is done
      * false while handshake is in progress.
      */
-    boolean doHandshake(SelectionKey sk) throws IOException {
+    boolean doHandShake(SelectionKey sk) throws IOException {
         SSLEngineResult result;
         if (initialHSComplete) {
             return true;
