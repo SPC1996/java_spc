@@ -74,7 +74,7 @@ public class ChannelIOSecure extends ChannelIO {
      * we use our superclass' requestBB for our application input buffer.
      * Outbound application data is supplied to us by our callers.
      */
-    private ByteBuffer intNetBB;
+    private ByteBuffer inNetBB;
     private ByteBuffer outNetBB;
 
     /**
@@ -121,7 +121,7 @@ public class ChannelIOSecure extends ChannelIO {
          * This may change, depending on the peer's SSL implementation.
          */
         netBBSize = sslEngine.getSession().getPacketBufferSize();
-        intNetBB = ByteBuffer.allocate(netBBSize);
+        inNetBB = ByteBuffer.allocate(netBBSize);
         outNetBB = ByteBuffer.allocate(netBBSize);
         outNetBB.position(0);
         outNetBB.limit(0);
@@ -154,9 +154,9 @@ public class ChannelIOSecure extends ChannelIO {
      */
     private void resizeResponseBB() {
         ByteBuffer bb = ByteBuffer.allocate(netBBSize);
-        intNetBB.flip();
-        bb.put(intNetBB);
-        intNetBB = bb;
+        inNetBB.flip();
+        bb.put(inNetBB);
+        inNetBB = bb;
     }
 
     /**
@@ -215,16 +215,16 @@ public class ChannelIOSecure extends ChannelIO {
 
         switch (initialHSStatus) {
             case NEED_UNWRAP:
-                if (sc.read(intNetBB) == -1) {
+                if (sc.read(inNetBB) == -1) {
                     sslEngine.closeInbound();
                     return initialHSComplete;
                 }
                 needIO:
                 while (initialHSStatus == SSLEngineResult.HandshakeStatus.NEED_UNWRAP) {
                     resizeRequestBB();
-                    intNetBB.flip();
-                    result = sslEngine.unwrap(intNetBB, requestBB);
-                    intNetBB.compact();
+                    inNetBB.flip();
+                    result = sslEngine.unwrap(inNetBB, requestBB);
+                    inNetBB.compact();
                     initialHSStatus = result.getHandshakeStatus();
                     switch (result.getStatus()) {
                         case OK:
@@ -241,7 +241,7 @@ public class ChannelIOSecure extends ChannelIO {
                             break;
                         case BUFFER_UNDERFLOW:
                             netBBSize = sslEngine.getSession().getPacketBufferSize();
-                            if (netBBSize > intNetBB.capacity()) {
+                            if (netBBSize > inNetBB.capacity()) {
                                 resizeResponseBB();
                             }
                             if (sk != null) {
@@ -311,22 +311,22 @@ public class ChannelIOSecure extends ChannelIO {
             throw new IllegalStateException();
         }
         int pos = requestBB.position();
-        if (sc.read(intNetBB) == -1) {
+        if (sc.read(inNetBB) == -1) {
             sslEngine.closeInbound();
             return -1;
         }
         do {
             resizeRequestBB();
-            intNetBB.flip();
-            result = sslEngine.unwrap(intNetBB, requestBB);
-            intNetBB.compact();
+            inNetBB.flip();
+            result = sslEngine.unwrap(inNetBB, requestBB);
+            inNetBB.compact();
             switch (result.getStatus()) {
                 case BUFFER_OVERFLOW:
                     appBBSize = sslEngine.getSession().getApplicationBufferSize();
                     break;
                 case BUFFER_UNDERFLOW:
                     netBBSize = sslEngine.getSession().getPacketBufferSize();
-                    if (netBBSize > intNetBB.capacity()) {
+                    if (netBBSize > inNetBB.capacity()) {
                         resizeResponseBB();
                         break;
                     }
@@ -338,7 +338,7 @@ public class ChannelIOSecure extends ChannelIO {
                 default:
                     throw new IOException("sslEngine error during data read: " + result.getStatus());
             }
-        } while ((intNetBB.position() != 0) && result.getStatus() != SSLEngineResult.Status.BUFFER_UNDERFLOW);
+        } while ((inNetBB.position() != 0) && result.getStatus() != SSLEngineResult.Status.BUFFER_UNDERFLOW);
         return requestBB.position() - pos;
     }
 
